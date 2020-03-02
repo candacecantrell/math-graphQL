@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator/check')
+const { validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
@@ -13,7 +13,7 @@ exports.signup = async (req, res, next) =>{
         throw error
     }
     const email = req.body.email
-    const name = req.body.password
+    const password = req.body.password
     try {
         const hashedPw = await bcrypt.hash(password, 12)
 

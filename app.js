@@ -7,7 +7,7 @@ const graphqlHttp = require('express-graphql')
 
 const graphqlSchema = require('./graphql/schema')
 const graphqlResolver = require('./graphql/resolvers')
-const auth = require('./middleware/users')
+const auth = require('./middleware/auth')
 
 const app = express()
 
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
     next()
 })
 
-app.request(auth)
+
 
 app.use(
     '/graphql',
@@ -59,6 +59,6 @@ mongoose
         'mongodb+srv://FLC:1td29W3fP2SQP4iC@cluster0-74x5c.mongodb.net/test?retryWrites=true&w=majority'
     )
     .then( result => {
-        app.listen(8080)
+        app.listen(8000)
     })
     .catch(err => console.log(err))

@@ -14,10 +14,12 @@ const userSchema = new Schema({
         type: String,
         default: 'New User'
     },
-    students: {
-        type: Schema.Types.ObjectId,
-        ref: 'Students'
-    }
+    students: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Students'
+        }
+    ]
 })
 
 module.exports = mongoose.model('User', userSchema)
