@@ -15,13 +15,18 @@ module.exports = buildSchema(`
         students: [Student]
     }
 
+    type AuthData {
+        token: String!
+        userId: String!
+    }
+
     input UserInputData {
         email: String!
         password: String!
     }
 
     type RootQuery{
-        hello: String
+        login(email: String!, password: String!): AuthData!
     }
 
     type RootMutation{
