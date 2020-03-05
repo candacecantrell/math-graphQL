@@ -43,7 +43,7 @@ module.exports = {
             const isEqual = await bcrypt.compare(password, user.password)
             if (!isEqual){
                 const error = new Error('Password is incorrect')
-                error.cod = 401
+                error.code = 401
                 throw error
             }
             const token = jwt.sign({
