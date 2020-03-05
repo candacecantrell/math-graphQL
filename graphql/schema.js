@@ -4,15 +4,17 @@ module.exports = buildSchema(`
     type Student {
         _id: ID!
         name: String!
-        unit: String!
-        lesson: String!
+        unit: String
+        lesson: String
+        createdAt: String!
+        updateaAt: String!
     }
 
     type User {
         _id: ID!
         email: String!
         password: String
-        students: [Student]
+        students: [Student!]
     }
 
     type AuthData {
@@ -25,12 +27,17 @@ module.exports = buildSchema(`
         password: String!
     }
 
+    input StudentInputData {
+        name: String!      
+    }
+    
     type RootQuery{
         login(email: String!, password: String!): AuthData!
     }
 
     type RootMutation{
         createUser(userInput: UserInputData): User!
+        createStudent(studentInput: StudentInputData): Student!
     }
 
     schema {

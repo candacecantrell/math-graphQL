@@ -9,11 +9,11 @@ const studentSchema = new Schema(
         },
         unit: {
             type: String,
-            required: true
+            required: false
         },
         lesson: {
             type: String,
-            require: true
+            require: false
         }
     }
 )
