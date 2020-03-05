@@ -57,7 +57,13 @@ module.exports = {
             )
             return { token: token, userId: user._id.toString() }
         },
+   
     createStudent: async function({ studentInput }, req) {
+        if (!req.isAuth){
+            const error = new Error('Not Authenticated')
+            error.code = 401
+            throw error
+        }
       const errors = []
 
 // error code not working check later   
@@ -74,11 +80,22 @@ module.exports = {
             error.code = 422
             throw error
         } */
-        
+
+        const user = await User.findById(req.userId)
+        if (!user){
+            const error = new Error('invalid user')
+            error.data = errors
+            error.code = 401
+            throw error
+        }
+
         const student = new Student({
-            name: studentInput.name
+            name: studentInput.name,
+            creator: user
             })
         const createdStudent = await student.save()
+        user.students.push(createdStudent)
+        await user.save()
        
         return {
             ...createdStudent._doc, 

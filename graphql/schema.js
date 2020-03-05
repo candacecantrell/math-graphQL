@@ -8,6 +8,7 @@ module.exports = buildSchema(`
         lesson: String
         createdAt: String!
         updateaAt: String!
+        creator: User!
     }
 
     type User {
@@ -28,7 +29,7 @@ module.exports = buildSchema(`
     }
 
     input StudentInputData {
-        name: String!      
+        name: String!     
     }
     
     type RootQuery{
