@@ -7,13 +7,14 @@ const Student = require('../models/students-model')
 
 
 
-module.exports = {
-    createUser: async function ({userInput}, req){
+const graphqlResolvers = {
+    Mutation: {
+    createUser: async function (){
         const errors = []
-            if(!validator.isEmail(userInput.email)){
+            if(!validator.isEmail(email)){
                 errors.push({message: 'Email is invalid'})
             }
-            if (validator.isEmpty(userInput.password) || !validator.isLength(userInput.password, { min: 8})){
+            if (validator.isEmpty(password) || !validator.isLength(userInput.password, { min: 8})){
                 errors.push({message: 'Password is not long enough'})
             }
             if (errors.length > 0) {
@@ -22,20 +23,22 @@ module.exports = {
                 error.code = 422
                 throw error
             }
-            const existingUser = await User.findOne({email: userInput.email})
+            const existingUser = await User.findOne(email)
             if (existingUser){
                 const error = new Error('User already exists')
                 throw error
             }
-           const hashedPw = await bcrypt.hash(userInput.password, 12)
+           const hashedPw = await bcrypt.hash(password, 12)
            const user = new User({
-               email: userInput.email,
+               email: email,
                password: hashedPw
            })
            const createdUser = await user.save()
            return{ ...createdUser._doc, _id: createdUser._id.toString() }       
         },
+    },
     
+    Query: {
     login: async function({ email, password }) {
             const user = await User.findOne({ email: email})
             if (!user) {
@@ -57,15 +60,15 @@ module.exports = {
             )
             return { token: token, userId: user._id.toString() }
         },
-   
-    createStudent: async function({ studentInput }, req) {
+    },
+    Mutation: {
+    createStudent: async function({ name }, req) {
         if (!req.isAuth){
             const error = new Error('Not Authenticated')
             error.code = 401
             throw error
         }
       const errors = []
-
 // error code not working check later   
      /*
         if(
@@ -80,7 +83,6 @@ module.exports = {
             error.code = 422
             throw error
         } */
-
         const user = await User.findById(req.userId)
         if (!user){
             const error = new Error('invalid user')
@@ -88,9 +90,8 @@ module.exports = {
             error.code = 401
             throw error
         }
-
         const student = new Student({
-            name: studentInput.name,
+            name: name,
             creator: user
             })
         const createdStudent = await student.save()
@@ -102,5 +103,23 @@ module.exports = {
             _id: createdStudent._id.toString(),
             }
         },
+    },
+    Query: {
+        allUsers: async () => await User.find({}).exec()
+    },
+    Mutation: {
+        addUser: async (_, args) => {
+            try {
+                let response = await User.create(args);
+                return response;
+            } catch(e) {
+                return e.message;
+            }
+        }
+    }
         
+    }
+
+    module.exports = {
+        graphqlResolvers
     }

@@ -1,48 +1,34 @@
-const { buildSchema } = require('graphql')
+const { gql } = require('apollo-server-express');
+require('../config')
 
-module.exports = buildSchema(`
-    type Student {
-        _id: ID!
-        name: String!
-        unit: String
-        lesson: String
-        createdAt: String!
-        updateaAt: String!
-        creator: User!
-    }
+const { User } = require('../models/user-model');
+const { Students } = require('../models/students-model');
 
-    type User {
-        _id: ID!
-        email: String!
-        password: String
-        students: [Student!]
-    }
-
-    type AuthData {
-        token: String!
-        userId: String!
-    }
-
-    input UserInputData {
+const typeDefs = gql`
+type User {
         email: String!
         password: String!
-    }
+        status: String!
+        students: String!
+        id: String!
 
-    input StudentInputData {
-        name: String!     
-    }
-    
-    type RootQuery{
-        login(email: String!, password: String!): AuthData!
-    }
+},
+type Students {
+    name: String!
+    unit: String!
+    lessons: String!
+},
+type Query {
+    login(email: String!, password: String!, id: ID): User!
+    allUsers: [User]
 
-    type RootMutation{
-        createUser(userInput: UserInputData): User!
-        createStudent(studentInput: StudentInputData): Student!
-    }
+},
+type Mutation {
+    createUser(email: String!, password: String!, id: String ): User
+    createStudent(name: String!): Students
+    addUser(email: String!, password: String!, id: String): User
+}`
 
-    schema {
-        query: RootQuery
-        mutation: RootMutation
-    }
-`)
+module.exports = {
+    typeDefs
+}
